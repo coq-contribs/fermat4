@@ -11,7 +11,7 @@
     - ArithCompl.v     Mainly complements of arithmetic
     - Pythagorean.v    Pythagorean triples
     - Descent.v        Infinite descent scheme
-    - Diophantus20.v     Diophantus' 20th problem
+    - Diophantus20.v   Diophantus' 20th problem
     - Fermat4.v        Fermat's last theorem for n = 4
     - description      Description file for retrieval
     - README           This file

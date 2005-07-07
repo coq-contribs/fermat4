@@ -255,9 +255,8 @@ Save.
 
 Lemma Zodd_opp1 : forall a : Z, Zodd (-a) -> Zodd a.
 Proof.
-intros;apply Zodd_def2;elim (Zodd_def1 (- a) H);intros;
-cut (a = -2 * x - 1); auto with zarith; intro; split with (- x - 1);
-   rewrite H1; ring.
+  intros; elim (Zodd_def1 _ H); clear H; intros; apply Zodd_def2;
+    exists (-x - 1); rewrite <- (Zopp_involutive a); rewrite H; ring.
 Save.
 
 Lemma Zodd_opp2 : forall a : Z, Zodd a -> Zodd (-a).
