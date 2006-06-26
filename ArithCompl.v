@@ -568,7 +568,7 @@ Proof.
   intros; elim H; clear H; intros; auto with zarith.
 Save.
 
-Lemma divide_2 : forall z : Z, z >= 0 -> z <> 0 -> z <> 1 -> (z | 2) -> z = 2.
+Lemma divide_2 : forall z : Z, 0 <= z -> z <> 0 -> z <> 1 -> (z | 2) -> z = 2.
 Proof.
   intros; cut (2 <> 0); auto with zarith; intro;
     generalize (Zdivide_bounds _ _ H2 H3); clear H2; simpl; generalize H;
