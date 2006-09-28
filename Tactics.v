@@ -45,6 +45,5 @@ Ltac head_IZR :=
     | simpl; auto ].
 
 Ltac neq_0 :=
-  split_Rmult;
-    (repeat progress head_IZR; replace 0%R with (IZR 0);
+  (repeat progress head_IZR; replace 0%R with (IZR 0);
       [ apply IZR_neq; fold_Zminus | auto ]).

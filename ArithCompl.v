@@ -209,7 +209,8 @@ Lemma sqr_sum5 : forall a b: Z,
   a <> 0 -> b <> 0 -> distinct_parity a b -> a + b < a * a + b * b.
 Proof.
   intros; case (Z_eq_dec a 1); intro;
-    [ rewrite e; ring (1 * 1 + b * b); apply Zplus_lt_compat_l;
+    [ rewrite e; replace (1 * 1 + b * b) with (1+b*b);[idtac|ring];
+      apply Zplus_lt_compat_l;
       case (Z_eq_dec b 1); intro;
       [ elimtype False; rewrite e in H1; rewrite e0 in H1;
         generalize (ndistp_eq 1); auto
@@ -445,8 +446,8 @@ Proof.
   intros; elim (Z_eq_dec d 0); intro;
     [ rewrite a in H; elim H; clear H; intros; elim H; clear H; intros;
       elim H0; clear H0; intros; generalize H; clear H; generalize H0;
-      clear H0; ring (q * 0); ring (q0 * 0); intros; exists 1; exists 1;
-      rewrite a; intuition; apply rel_prime_1
+      clear H0; ring_simplify (q * 0); ring_simplify (q0 * 0); intros;
+      exists 1; exists 1; rewrite a; intuition; apply rel_prime_1
     | elim H; clear H; intros; elim H; clear H; intros; elim H0; clear H0;
       intros; exists q; exists q0; rewrite (Zmult_comm d q);
       rewrite (Zmult_comm d q0); intuition; elim (rel_prime_dec q q0); intro;
@@ -633,8 +634,10 @@ Lemma gcd2_relp_odd : forall u v : Z,
 Proof.
   intros; elim (Zgcd_spec (u - v) (u + v)); intros; elim p; clear p; intros;
     elim H2; intros; generalize (Zdivide_plus_r _ _ _ H4 H5);
-    ring (u - v + (u + v)); intro; generalize (Zdivide_opp_r _ _ H4); intro;
-    generalize (Zdivide_plus_r _ _ _ H5 H8); ring (u + v + - (u - v));
+    ring_simplify (u - v + (u + v)); intro;
+    generalize (Zdivide_opp_r _ _ H4); intro;
+    generalize (Zdivide_plus_r _ _ _ H5 H8);
+    ring_simplify (u + v + - (u - v));
     clear H8; intro; generalize (Zodd_sum2 _ _ H H0); intro;
     elim (Zeven_def1 _ H9); clear H9; intros; rewrite Zmult_comm in H9;
     generalize (Zdivide_intro _ _ _ H9); clear x0 H9; intro;
@@ -714,8 +717,10 @@ Proof.
     elim (Z_eq_dec x 1); intro;
       [ rewrite a in H2; assumption
       | elimtype False; elim H2; clear H2; intros;
-        generalize (Zdivide_plus_r _ _ _ H2 H4); ring (m + n + (n - m)); intro;
-        generalize (Zdivide_minus_l _ _ _ H2 H4); ring (m + n - (n - m));
+        generalize (Zdivide_plus_r _ _ _ H2 H4);
+        ring_simplify (m + n + (n - m)); intro;
+        generalize (Zdivide_minus_l _ _ _ H2 H4);
+        ring_simplify (m + n - (n - m));
         intro; elim (Zdivide_dec x 2); intro;
           [ elim (Z_eq_dec x 0); intro;
             [ rewrite a0 in a; clear a0; elim a; clear a; intros;
@@ -1074,7 +1079,7 @@ Proof.
   intro; rewrite H0; unfold Rdiv; split_Rmult;
     [ discrR; apply sqr_sum; assumption
     | apply Rinv_neq_0_compat; split_Rmult; discrR; assumption ].
-  field; split_Rmult; discrR; assumption.
+  field; discrR; assumption.
 Save.
 
 Lemma Rdiv_ge_0 : forall a b : R, (a >= 0 -> b > 0 -> a / b >= 0)%R.
@@ -1115,7 +1120,7 @@ Proof.
         cut (IZR c * IZR a = IZR c * (IZR b * IZR d))%R;
           [ clear H1; intro; generalize (Rmult_eq_reg_l _ _ _ H1 H3); clear H1;
             intro; rewrite <- mult_IZR in H1; apply eq_IZR; assumption
-          | ring; rewrite H1; ring ]
+          | rewrite (Rmult_comm (IZR c) (IZR a)); rewrite H1; ring ]
       | apply not_O_IZR; assumption ]
     | rewrite mult_IZR; split_Rmult; apply not_O_IZR; assumption ].
 Save.
@@ -1131,7 +1136,7 @@ Proof.
       replace 0%R with (/ IZR (- b) * 0)%R in H0; try ring;
       rewrite (Rmult_comm (IZR a)) in H0;
       cut (/ IZR b * IZR a = / IZR (- b) * IZR (- a))%R;
-      try (repeat rewrite Ropp_Ropp_IZR; field; split_Rmult;
+      try (repeat rewrite Ropp_Ropp_IZR; field; 
       try rewrite <- Ropp_Ropp_IZR; apply not_O_IZR; auto with zarith);
       intro; rewrite H3 in H0; generalize (Rinv_0_lt_compat _ H2); clear H2;
       intro; generalize (Rmult_le_reg_l _ _ _ H2 H0); intro;
@@ -1155,7 +1160,7 @@ Save.
 Lemma frac_simp : forall a b c : Z,
   b <> 0 -> c <> 0 -> frac (c * a) (c * b) = frac a b.
 Proof.
-  intros; unfold frac; repeat rewrite mult_IZR; field; split_Rmult;
+  intros; unfold frac; repeat rewrite mult_IZR; field; split;
     apply not_O_IZR; assumption.
 Save.
 

@@ -28,10 +28,13 @@ Definition D_r (r x y : R) := (y = r * (x + 1))%R.
 Lemma pytha_ucirc1 : forall a b c : Z,
   (c > 0) -> (is_pytha a b c) -> (in_ucirc (frac a c) (frac b c)).
 Proof.
-  intros; unfold in_ucirc; unfold frac; field.
+  intros; unfold in_ucirc; unfold frac; field_simplify_eq.
   unfold is_pytha in H0; elim H0; intros; repeat rewrite <- mult_IZR;
     repeat rewrite <- plus_IZR; apply IZR_eq; auto with zarith.
-  split_Rmult; discrR; auto with zarith.
+    replace (a * a * c * c) with (c * c * a * a) by ring.
+    replace (c * c * c * c) with (c * c * (c * c)) by ring.
+    rewrite <- H2 in |- *;  ring.
+  discrR; auto with zarith.
 Save.
 
 Lemma pytha_ucirc2 : forall a b c : Z, (a >= 0) /\ (b >= 0) /\ (c > 0) ->
@@ -43,7 +46,7 @@ Proof.
  pattern (IZR c * IZR c)%R at 2; rewrite <- mult_IZR;rewrite Rinv_l.
  rewrite Rinv_mult_distr.
  rewrite <- H0; rewrite plus_IZR; repeat rewrite mult_IZR; field.
- split_Rmult; discrR; auto with zarith.
+ discrR; auto with zarith.
  discrR; auto with zarith.
  discrR; auto with zarith.
  rewrite mult_IZR; split_Rmult; discrR; auto with zarith.
@@ -87,14 +90,14 @@ Proof.
   cut ((2 * r * r * (2 * r * r) - 4 * (1 + r * r) * (r * r - 1))%R = 4%R).
   intro;rewrite H5;rewrite sqrt_square.
   induction 1;[right|left].
-  split;[rewrite H6;field;split_Rmult;discrR;assumption
-        |rewrite H1;rewrite H6;field;split_Rmult;discrR;assumption].
-  split;[rewrite H6;field;split_Rmult;discrR;assumption
-        |rewrite H1;rewrite H6;field;split_Rmult;discrR;assumption].
+  split;[rewrite H6;field;assumption
+        |rewrite H1;rewrite H6;field;assumption].
+  split;[rewrite H6;field;assumption
+        |rewrite H1;rewrite H6;field;assumption].
   unfold Rle;left;prove_sup.
   ring.
   unfold Delta_is_pos;unfold Delta;unfold Rsqr;simpl;
-    ring (2 * r * r * (2 * r * r) - 4 * (1 + r * r) * (r * r - 1))%R;
+    ring_simplify (2 * r * r * (2 * r * r) - 4 * (1 + r * r) * (r * r - 1))%R;
     unfold Rle;left;prove_sup.
   apply Rgt_not_eq;unfold Rgt;rewrite Rplus_comm;apply Rle_lt_0_plus_1;
     fold (Rsqr r);elim (Req_dec r 0);intro;
@@ -120,11 +123,11 @@ Proof.
   exists (b * b - a * a, a * a + b * b); split.
   auto with zarith.
   rewrite H7; rewrite <- Z_R_minus; rewrite plus_IZR; repeat rewrite mult_IZR;
-    field; split_Rmult; discrR; auto with zarith reals.
+    field; split;discrR; auto with zarith reals.
   exists (2 * a * b * b, (a * a + b * b) * b); split.
   apply not_IZR_0; rewrite mult_IZR; split_Rmult; discrR; auto with zarith.
   rewrite H7; repeat rewrite mult_IZR; rewrite plus_IZR;
-    repeat rewrite mult_IZR; simpl; field; split_Rmult; discrR;
+    repeat rewrite mult_IZR; simpl; field; split; discrR;
     auto with zarith reals.
 Save.
 
@@ -138,7 +141,8 @@ Proof.
   exists (1,1); split; [ auto with zarith | field; discrR ].
   elim H; intros; split.
   assumption.
-  rewrite H0; rewrite H0 in H1; ring (1 * (-1 + 1))%R; cut ((1 + y * y) = 1)%R;
+  rewrite H0; rewrite H0 in H1; ring_simplify (1 * (-1 + 1))%R;
+    cut ((1 + y * y) = 1)%R;
     [ intro; apply Rsqr_0_uniq; unfold Rsqr;
       apply (Rplus_0_r_uniq 1 (y * y) H3)%R
     | pattern 1%R at 2; rewrite <- H1; ring ].
@@ -161,7 +165,7 @@ Proof.
   apply not_IZR_0; rewrite mult_IZR; rewrite plus_IZR; split_Rmult; discrR;
     assumption.
   repeat rewrite mult_IZR; rewrite plus_IZR; field; discrR; try assumption.
-  split_Rmult; discrR; try assumption; fold (IZR a / IZR b)%R;
+  repeat split; discrR; try assumption; fold (IZR a / IZR b)%R;
     rewrite <- H8; assumption.
   split; [ elim H; intros; assumption | field; assumption ].
 Save.
@@ -246,9 +250,9 @@ Proof.
     unfold cond_pqb; exists a; exists b; rewrite H7; rewrite H8; rewrite H17.
   cut (b <> 0); auto with zarith; intro.
   split.
-  field; split_Rmult; discrR; auto with zarith reals.
+  field; split; discrR; auto with zarith reals.
   split.
-  field; split_Rmult; discrR; auto with zarith reals.
+  field; split; discrR; auto with zarith reals.
   tauto.
 Save.
 
@@ -270,8 +274,12 @@ Proof.
   exists x0; exists x1; intuition.
   exists (x1 - x0); exists (x0 + x1); rewrite plus_IZR; rewrite <- Z_R_minus;
     rewrite H; rewrite H5.
-  split; try split; (field; neq_0) || (do 3 try split; auto with zarith);
-    try (apply sqr_sum; auto with zarith).
+  replace
+   ((IZR x1 - IZR x0) * (IZR x1 - IZR x0) +
+    (IZR x0 + IZR x1) * (IZR x0 + IZR x1))%R with
+   (2 * (IZR x0 * IZR x0 + IZR x1 * IZR x1))%R by  ring.
+  split;[idtac|split]; try (field; neq_0;apply sqr_sum; auto with zarith).
+  do 3 try split; auto with zarith.
   generalize (prop1 _ _ H4 H1); auto with zarith.
 Save.
 
@@ -286,13 +294,14 @@ Proof.
     intro; generalize (Zodd_def1 _ H6); clear H6; intro; elim_hyps.
   exists (x2 - x3); exists (x2 + x3 + 1); split;
     [ right; rewrite H; rewrite H0; rewrite H5; rewrite H6; atomic_IZR; simpl;
-      split; field; neq_0; apply sqr_sum; auto with zarith
+      split; field; split; neq_0; apply sqr_sum; auto with zarith
     | rewrite H5 in H1; rewrite H6 in H2; rewrite H5 in H3; rewrite H6 in H3;
       do 4 try split; auto with zarith ].
-  apply rel_prime_sym; apply relp_sum; ring (x2 + x3 + 1 + (x2 - x3));
-    ring (x2 + x3 + 1 - (x2 - x3)); generalize H5; clear H5; ring (2 * x3 + 1);
-    intro; generalize H6; clear H6; ring (2 * x2 + 1); intro; rewrite <- H5;
-    rewrite <- H6; auto with zarith.
+  apply rel_prime_sym; apply relp_sum; ring_simplify (x2 + x3 + 1 + (x2 - x3));
+    ring_simplify (x2 + x3 + 1 - (x2 - x3)); generalize H5; clear H5;
+    ring_simplify (2 * x3 + 1);
+    intro; generalize H6; clear H6; ring_simplify (2 * x2 + 1); intro;
+    rewrite <- H5; rewrite <- H6; auto with zarith.
   elim (Zeven_odd_dec x2); intro; elim (Zeven_odd_dec x3); intro; Zparity_hyps;
     rewrite H7; rewrite H8;
     [ left; split; [ apply Zeven_def2; exists (x4 - x5)

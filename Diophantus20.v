@@ -186,9 +186,9 @@ Proof.
         (apply (for_mba_pytha1 m n u v a b); assumption) ||
         (apply (for_mba_pytha2 m n u v a b); assumption) ].
   cut (k' = 1).
-  intro Hk'; generalize H21; generalize H22; generalize H23; clear H21 H22 H23;
-    rewrite Hk';  ring (1 * (p' * p' + q' * q')); ring (1 * (p' * q')); intros;
-    cut (0 <= p'); auto with zarith; cut (0 <= q'); auto with zarith;
+  intro Hk'; generalize H21 H22 H23; clear H21 H22 H23; rewrite Hk';
+    ring_simplify q' p' (1 * (p' * p' + q' * q')) (1 * (p' * q'));
+    intros; cut (0 <= p'); auto with zarith; cut (0 <= q'); auto with zarith;
     intros Hq'4 Hp'4; elim (prop4 p' q' Hp'4 Hq'4 H24).
   intros; generalize (prop1 _ _ H24 H25); intro;
     elim (prop4 (p' + q') (q' - p')); auto with zarith.
