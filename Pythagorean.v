@@ -31,9 +31,6 @@ Proof.
   intros; unfold in_ucirc; unfold frac; field_simplify_eq.
   unfold is_pytha in H0; elim H0; intros; repeat rewrite <- mult_IZR;
     repeat rewrite <- plus_IZR; apply IZR_eq; auto with zarith.
-    replace (a * a * c * c) with (c * c * a * a) by ring.
-    replace (c * c * c * c) with (c * c * (c * c)) by ring.
-    rewrite <- H2 in |- *;  ring.
   discrR; auto with zarith.
 Save.
 
