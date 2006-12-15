@@ -29,8 +29,9 @@ Lemma pytha_ucirc1 : forall a b c : Z,
   (c > 0) -> (is_pytha a b c) -> (in_ucirc (frac a c) (frac b c)).
 Proof.
   intros; unfold in_ucirc; unfold frac; field_simplify_eq.
-  unfold is_pytha in H0; elim H0; intros; repeat rewrite <- mult_IZR;
-    repeat rewrite <- plus_IZR; apply IZR_eq; auto with zarith.
+  unfold is_pytha in H0; elim H0; intros. 
+  repeat rewrite pow_IZR. rewrite <- plus_IZR. simpl Z_of_nat.
+  ring_simplify [(sym_eq H2)] (c^2);trivial.
   discrR; auto with zarith.
 Save.
 
