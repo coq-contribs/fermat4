@@ -208,20 +208,20 @@ Proof.
     replace (q' * q' - p' * p') with ((p' + q') * (q' - p')); try ring;
     apply is_sqr_mult; assumption).
   rewrite H19; rewrite H18; rewrite H23;
-    apply (Zlt_le_trans (q' + p') (q' * q' + p' * p')
-      (m * m + (q' * q' + p' * p') * (q' * q' + p' * p'))).
+    apply (Zlt_le_trans (q' + p') (q' ^2 + p' ^2)
+      (m * m + (q' ^2 + p' ^2) * (q' ^2 + p' ^2))).
   generalize (Zlt_not_eq _ a Ha); intro Han0.
   generalize (Zgt_lt q' _ Hq'); intro Hq'g.
   generalize (Zlt_not_eq _ q' Hq'g); intro Hqn0.
   replace (q' + p') with (p' + q'); try ring;
-    replace (q' * q' + p' * p') with (p' * p' + q' * q'); try ring.
+    replace (q' ^ 2 + p' ^ 2) with (p' * p' + q' * q'); try ring.
   cut (p' <> 0); try (intro; cut (q' <> 0); progress auto with zarith).
   intro; rewrite H29 in H22; replace (2 * 1 * (0 * q')) with 0 in H22.
   apply Han0; symmetry; apply sqr_0; auto with zarith.
   ring.
-  apply (Zle_trans (q' * q' + p' * p')
-    ((q' * q' + p' * p') * (q' * q' + p' * p'))
-    (m * m + (q' * q' + p' * p') * (q' * q' + p' * p'))); auto with zarith.
+  apply (Zle_trans (q' ^2 + p' ^2)
+    ((q' ^2 + p' ^2) * (q' ^2 + p' ^2))
+    (m * m + (q' ^2 + p' ^2) * (q' ^2 + p' ^2))); auto with zarith.
   apply sqr_le.
   replace ((p' + q') * (q' - p')) with (q' * q' - p' * p'); try ring;
     generalize H21; replace (1 * (q' * q' - p' * p')) with (q' * q' - p' * p');
