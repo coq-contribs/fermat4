@@ -68,7 +68,7 @@ Definition eqp (p1 p2 : R * R) := (fst p1) = (fst p2) /\ (snd p1)= (snd p2).
 (* Total order over points (using R) *)
 Lemma ordp : forall p1 p2 : R * R, (eqp p1 p2) \/ ~(eqp p1 p2).
 Proof.
-  intros; unfold eqp; elim p3; elim p4; intros; simpl.
+  intros p3 p4. unfold eqp; elim p3; elim p4; intros; simpl.
   elim (Req_dec a a0); elim (Req_dec b b0); intuition.
 Save.
 
