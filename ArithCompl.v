@@ -233,14 +233,7 @@ Save.
 
 Lemma Zodd_def1 : forall z : Z, (Zodd z) -> exists k : Z, z = 2 * k + 1.
 Proof.
-  intros; elim (Z_lt_le_dec z 0); intro.
-  generalize (Zlt_le_weak _ _ a); clear a; intro;
-    generalize (Zodd_div2_neg _ H0 H); intro;
-    cut (exists k : Z, z = 2 * k - 1);
-      [ intro; elim H2; clear H2; intros; exists (x - 1); rewrite H2; ring
-      | exists (Zdiv2 z); assumption ].
-  generalize (Zle_ge _ _ b); clear b; intro; generalize (Zodd_div2 _ H0 H);
-  intro; exists (Zdiv2 z); assumption.
+ apply Zodd_ex.
 Save.
 
 Lemma Zodd_def2 : forall z : Z, (exists k : Z, z = 2 * k + 1) -> (Zodd z).
