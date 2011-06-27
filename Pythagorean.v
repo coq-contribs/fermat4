@@ -330,8 +330,8 @@ Proof.
   cut (c * b = a * d).
   intro; cut (d | c * b);
     [ intro; cut (rel_prime d c);
-        try (intro; generalize (Gauss d c b H4 H5); intro; elim H6; clear H6;
-        intros; exists q; intuition; rewrite H7 in H6); auto with zarith
+        try (intro; generalize (Gauss d c b H4 H5); intro; destruct H6 as (q,H6);
+        exists q; intuition; rewrite H7 in H6); auto with zarith
     | apply (Zdivide_intro _ _ a H3) ].
   generalize (Rmult_eq_compat_l (IZR b * IZR d) _ _ H1); clear H1; intro;
     replace (IZR b * IZR d * (IZR a / IZR b))%R

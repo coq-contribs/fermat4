@@ -39,8 +39,8 @@ Proof.
     x1 * x1 * x1 * x1)));
       [ intro; rewrite (Zmult_comm (x0 * x0 * x0 * x0)) in H8;
         generalize (Zdivide_intro _ _ _ H8); intro;
-        generalize (divide_4 _ _ H9); clear H9; intro; elim H9; clear H9;
-        intros; rewrite H9 in H8; rewrite H9 in H; rewrite H5 in H0;
+        generalize (divide_4 _ _ H9); clear H9; intro; destruct H9 as (q,H9);
+        rewrite H9 in H8; rewrite H9 in H; rewrite H5 in H0;
         rewrite H6 in H1; generalize H4; clear H4; intro;
         elim (Zle_lt_or_eq _ _ H4); clear H4; intro; try (rewrite <- H4 in H;
         auto with zarith); rewrite Zmult_comm in H0; rewrite Zmult_comm in H1;
