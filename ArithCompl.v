@@ -10,6 +10,8 @@ Require Export Znumtheory.
 Require Export Reals.
 Open Scope Z_scope.
 
+Unset Standard Proposition Elimination Names.
+
 (***************)
 (* Regarding Z *)
 (***************)
