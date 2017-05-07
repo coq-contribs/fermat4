@@ -86,7 +86,8 @@ Proof.
                                     (r * r - 1) x H4 H2)%R.
   unfold sol_x1, sol_x2;unfold Delta;unfold Rsqr;simpl.
   cut ((2 * r * r * (2 * r * r) - 4 * (1 + r * r) * (r * r - 1))%R = 4%R).
-  intro;rewrite H5;rewrite sqrt_square.
+  intro;rewrite H5. replace (4)%R with (2*2)%R by auto.
+  rewrite sqrt_square.
   induction 1;[right|left].
   split;[rewrite H6;field;assumption
         |rewrite H1;rewrite H6;field;assumption].
@@ -101,7 +102,7 @@ Proof.
     fold (Rsqr r);elim (Req_dec r 0);intro;
     [rewrite H3;rewrite Rsqr_0;unfold Rle;right;auto
     |unfold Rle;left;apply Rsqr_pos_lt;assumption].
-  pattern 1%R at 4;rewrite <- H0;unfold Rsqr;ring.
+  pattern 1%R at 2;rewrite <- H0;unfold Rsqr;ring.
 Save.
 
 (* step 3 *)
