@@ -28,7 +28,7 @@ Proof.
     rewrite <- H5; generalize (relp_neq _ _ H7 H8 H2); auto with zarith.
   apply (gcd2_rel_prime (u + v) (u - v) x x0); auto; apply Zis_gcd_sym;
     apply gcd2_relp_odd; auto.
-Save.
+Qed.
 
 Lemma for_exists_ab : forall u v m n : Z,
   v <= u -> u * u = m * m + n * n -> v * v = n * n - m * m -> 1 < u -> 1 < v ->
@@ -59,7 +59,7 @@ Proof.
                 [ rewrite H6; rewrite H10; ring | ring ]
               | replace (2 * (m * m)) with ((m * m + n * n) - (n * n - m * m));
                 [ rewrite H; rewrite H0; ring | ring ] ] ] ]).
-Save.
+Qed.
 
 (***********************)
 (* Diophantus' problem *)
@@ -86,7 +86,7 @@ Proof.
   discriminate.
   replace (2 * n * n) with (m * m + n * n + (n * n - m * m));
     [ rewrite H; rewrite H0; ring | ring ].
-Save.
+Qed.
 
 Lemma for_mba_pytha2: forall m n u v a b : Z,
   u * u = m * m + n * n -> v * v = n * n - m * m -> u - v = 2 * (b * b) ->
@@ -109,7 +109,7 @@ Proof.
   discriminate.
   replace (2 * n * n) with (m * m + n * n + (n * n - m * m));
     [ rewrite H; rewrite H0; ring | ring ].
-Save.
+Qed.
 
 Lemma diophantus20_equiv: forall y z : Z,
   y > 0 -> z > 0 -> y <= z -> rel_prime y z -> distinct_parity y z ->
@@ -270,7 +270,7 @@ Proof.
   auto with zarith.
   auto with zarith.
   ring.
-Save.
+Qed.
 
 Lemma diophantus20_refined : forall p q : Z,
   p > 0 -> q > 0 -> p <= q -> rel_prime p q -> distinct_parity p q ->
@@ -302,7 +302,7 @@ Proof.
   assumption.
   auto with zarith.
   auto with zarith.
-Save.
+Qed.
 
 Lemma diophantus20 :
   ~ (exists x : Z, exists y : Z, exists z : Z, exists t : Z,
@@ -337,4 +337,4 @@ Proof.
          match goal with
          | id : _ |- _ => elim (Zmult_neq_0 _ _ id); auto with zarith; intros
          end ]).
-Save.
+Qed.

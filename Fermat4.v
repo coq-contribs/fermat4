@@ -25,7 +25,7 @@ Proof.
     | exists (x * x); intuition ].
   replace ((z * z + y * y) * (z * z - y * y)) with
     (z * z * z * z - y * y * y * y); try solve [ ring ]; rewrite <- H4; ring.
-Save.
+Qed.
 
 Lemma fermat4: 
   ~(exists x : Z, exists y : Z, exists z : Z,
@@ -94,4 +94,4 @@ Proof.
             rewrite H6; ring); intro;
             generalize (not_rel_prime2 _ _ _ H18 H19 b H17); intro;
             generalize (prop2 _ _ H7); auto ] ] ] ].
-Save.
+Qed.

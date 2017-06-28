@@ -33,7 +33,7 @@ Proof.
   repeat rewrite pow_IZR. rewrite <- plus_IZR. simpl Z_of_nat.
   ring_simplify [(sym_eq H2)] (c^2);trivial.
   discrR; auto with zarith.
-Save.
+Qed.
 
 Lemma pytha_ucirc2 : forall a b c : Z, (a >= 0) /\ (b >= 0) /\ (c > 0) ->
   (in_ucirc (frac a c) (frac b c)) -> (is_pytha a b c).
@@ -49,7 +49,7 @@ Proof.
  discrR; auto with zarith.
  rewrite mult_IZR; split_Rmult; discrR; auto with zarith.
  apply Rinv_neq_0_compat; split_Rmult; discrR; auto with zarith.
-Save.
+Qed.
 
 (* step 2 *)
 
@@ -70,7 +70,7 @@ Lemma ordp : forall p1 p2 : R * R, (eqp p1 p2) \/ ~(eqp p1 p2).
 Proof.
   intros p3 p4. unfold eqp; elim p3; elim p4; intros; simpl.
   elim (Req_dec a a0); elim (Req_dec b b0); intuition.
-Save.
+Qed.
 
 (* Characterization of the intersection *)
 Lemma interCDr_sol : forall r x y : R,
@@ -103,7 +103,7 @@ Proof.
     [rewrite H3;rewrite Rsqr_0;unfold Rle;right;auto
     |unfold Rle;left;apply Rsqr_pos_lt;assumption].
   pattern 1%R at 2;rewrite <- H0;unfold Rsqr;ring.
-Save.
+Qed.
 
 (* step 3 *)
 
@@ -128,7 +128,7 @@ Proof.
   rewrite H7; repeat rewrite mult_IZR; rewrite plus_IZR;
     repeat rewrite mult_IZR; simpl; field; split; discrR;
     auto with zarith reals.
-Save.
+Qed.
 
 Lemma rat_coo2 : forall x y : R, (in_ucirc x y) /\ (is_ratp (x,y)) ->
   exists r : R, (is_rat r) /\ (interCDr r x y).
@@ -167,7 +167,7 @@ Proof.
   repeat split; discrR; try assumption; fold (IZR a / IZR b)%R;
     rewrite <- H8; assumption.
   split; [ elim H; intros; assumption | field; assumption ].
-Save.
+Qed.
 
 (* step 4 *)
 
@@ -238,7 +238,7 @@ Proof.
     apply (Rsqr_incr_0_var x0 1 H15); unfold Rle; left; prove_sup.
   auto.
   assumption.
-Save.
+Qed.
 
 Lemma rat_pos_coo2 : forall x y : R, (is_ucp (x,y)) -> (in_ucp_setb x y).
 Proof.
@@ -253,7 +253,7 @@ Proof.
   split.
   field; split; discrR; auto with zarith reals.
   tauto.
-Save.
+Qed.
 
 (* Step 5 *)
 
@@ -280,7 +280,7 @@ Proof.
   split;[idtac|split]; try (field; neq_0;apply sqr_sum; auto with zarith).
   do 3 try split; auto with zarith.
   generalize (prop1 _ _ H4 H1); auto with zarith.
-Save.
+Qed.
 
 (* Inclusion of in_ucp_setb in in_ucp_set *)
 Lemma nrat_pos_coo2 : forall x y : R, (in_ucp_setb x y) -> (in_ucp_set x y).
@@ -311,7 +311,7 @@ Proof.
                     | apply Zeven_def2; exists (x4 + x5 + 1) ]
     | left; split; [ apply Zeven_def2; exists (x4 - x5)
                    | apply Zodd_def2; exists (x4 + x5 + 1) ] ]; ring.
-Save.
+Qed.
 
 (* step 6 *)
 
@@ -342,7 +342,7 @@ Proof.
         [ repeat rewrite <- mult_IZR in H1; generalize (eq_IZR _ _ H1); auto
         | field; discrR; assumption ]
       | field; discrR; assumption ].
-Save.
+Qed.
 
 Lemma pytha_thm1 : forall a b c : Z, (is_pytha a b c) -> (pytha_set a b c).
 Proof.
@@ -403,7 +403,7 @@ Proof.
       (left; rewrite H3 in H0; simpl in H0; progress auto with zarith)
       || (compute; auto with zarith)
     | auto with zarith ].
-Save.
+Qed.
 
 Lemma pytha_thm2 : forall a b c : Z, (pytha_set a b c) -> (is_pytha a b c).
 Proof.
@@ -412,7 +412,7 @@ Proof.
     generalize (Zge_le _ _ H2); clear H2; intro; generalize (Zgt_lt _ _ H4);
     clear H4; intro; generalize (Zlt_le_weak _ _ H4); intro;
     repeat apply Zmult_le_0_compat; auto with zarith).
-Save.
+Qed.
 
 (* A specific case *)
 
@@ -431,4 +431,4 @@ Proof.
   elimtype False; rewrite <- Zmult_assoc in H;
   generalize (Zeven_def2 _ (ex_intro (fun x => a = 2 * x) (x1 * (x * x0)) H));
   intro; generalize (Zeven_not_Zodd _ H9); auto.
-Save.
+Qed.

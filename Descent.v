@@ -12,7 +12,7 @@ Definition f (x : nat * nat) := ((fst x) + (snd x))%nat.
 Lemma R_noet_wf : well_founded R_noet.
 Proof.
   apply (well_founded_lt_compat _ f R_noet); auto.
-Save.
+Qed.
 
 Lemma noetherian : forall P : nat * nat -> Prop,
   (forall z : nat * nat, (forall y : nat * nat,
@@ -20,7 +20,7 @@ Lemma noetherian : forall P : nat * nat -> Prop,
   forall x : nat * nat, P x.
 Proof.
   intros; generalize (well_founded_ind R_noet_wf P); auto.
-Save.
+Qed.
 
 Lemma infinite_descent_nat : forall P : nat * nat -> Prop,
   (forall x : nat * nat, (P x -> exists y : nat * nat,
@@ -29,7 +29,7 @@ Lemma infinite_descent_nat : forall P : nat * nat -> Prop,
 Proof.
   intros; apply (noetherian (fun x => ~(P x))); red; intros; elim (H z H1);
     intros; apply (H0 x0); tauto.
-Save.
+Qed.
 
 Lemma infinite_descent : forall P : Z -> Z -> Prop,
   (forall x1 x2 : Z, 0 <= x1 -> 0 <= x2 ->
@@ -49,4 +49,4 @@ Proof.
     intuition; elim (Z_of_nat_complete x3 H1); intros;
     elim (Z_of_nat_complete x4 H); intros; exists (x5, x6); simpl;
     rewrite H3 in H4; rewrite H5 in H4; intuition.
-Save.
+Qed.
