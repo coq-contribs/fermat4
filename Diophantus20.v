@@ -125,8 +125,8 @@ Proof.
       0 < y1 /\ 0 < y2 /\ y1 <= y2 /\ rel_prime y1 y2 /\
       distinct_parity y1 y2 /\ is_sqr (y1 * (y2 * (y2 * y2 - y1 * y1)))).
   intro H4; apply (H3 H4) with (y * y) (z * z);
-    try (apply Zge_le; apply sqr_pos).
-  intuition; try (apply Zgt_lt; apply sqr_spos; auto with zarith).
+    try (apply Z.ge_le; apply sqr_pos).
+  intuition; try (apply Z.gt_lt; apply sqr_spos; auto with zarith).
   cut (y >= 0); auto with zarith.
   apply (prop2 y z H0').
   apply (distp_sqr1 _ _ H1').
@@ -182,7 +182,7 @@ Proof.
         | elim H17; clear H17; intro H17; elim H17; clear H17; intros H17 H18;
           cut (u = b * b + 2 * (a * a)); auto with zarith; intro;
           rewrite H20 in H15; apply Zodd_sum3 with (b := a * a); assumption ]
-      | unfold is_pytha, pos_triple; intuition; (apply Zle_ge; apply sqr_2) ||
+      | unfold is_pytha, pos_triple; intuition; (apply Z.le_ge; apply sqr_2) ||
         (apply (for_mba_pytha1 m n u v a b); assumption) ||
         (apply (for_mba_pytha2 m n u v a b); assumption) ].
   cut (k' = 1).
@@ -208,10 +208,10 @@ Proof.
     replace (q' * q' - p' * p') with ((p' + q') * (q' - p')); try ring;
     apply is_sqr_mult; assumption).
   rewrite H19; rewrite H18; rewrite H23.
-    apply (Zlt_le_trans (q' + p') (q' ^2 + p' ^2)
+    apply (Z.lt_le_trans (q' + p') (q' ^2 + p' ^2)
       (m * m + (q' ^2 + p' ^2) * (q' ^2 + p' ^2))).
   generalize (Zlt_not_eq _ a Ha); intro Han0.
-  generalize (Zgt_lt q' _ Hq'); intro Hq'g.
+  generalize (Z.gt_lt q' _ Hq'); intro Hq'g.
   generalize (Zlt_not_eq _ q' Hq'g); intro Hqn0.
   replace (q' + p') with (p' + q'); try ring;
     replace (q' ^2 + p' ^2) with (p' * p' + q' * q'); try ring.
@@ -219,7 +219,7 @@ Proof.
   intro; rewrite H29 in H22; replace (2 * 1 * (0 * q')) with 0 in H22.
   apply Han0; symmetry; apply sqr_0; auto with zarith.
   ring.
-  apply (Zle_trans (q' ^2 + p' ^2)
+  apply (Z.le_trans (q' ^2 + p' ^2)
     ((q' ^2 + p' ^2) * (q' ^2 + p' ^2))
     (m * m + (q' ^2 + p' ^2) * (q' ^2 + p' ^2))); auto with zarith.
   apply sqr_le.
@@ -232,7 +232,7 @@ Proof.
   split with a; split; auto with zarith.
   apply (relp_mult1 (b * b) (2 * (a * a)) (q' * q' - p' * p')
     (2 * (p' * q')) k'); auto with zarith.
-  generalize (distp_neq _ _ H25); intro Hneq; generalize (Zge_le _ _ Hp');
+  generalize (distp_neq _ _ H25); intro Hneq; generalize (Z.ge_le _ _ Hp');
     clear Hp'; intro Hp'; cut (p' < q'); auto with zarith.
   rewrite H22; ring.
   apply (relp_sum (b * b) (2 * (a * a))).
@@ -315,7 +315,7 @@ Proof.
     intros; elim_hyps;
     (cut (x3 > 0); 
      [ intro; apply (diophantus20_refined x3 x4); try assumption;    
-       generalize (Zge_le _ _ H8); intro; (cut (x5 > 0);
+       generalize (Z.ge_le _ _ H8); intro; (cut (x5 > 0);
        [ intro; apply (is_sqr_compat x5); auto with zarith;
          repeat progress (apply Zmult_le_0_compat; auto with zarith); split;
            [ repeat progress (apply Zmult_le_0_compat; auto with zarith)
@@ -324,8 +324,8 @@ Proof.
              | id : ?x = 2 * _ |- _ => replace x with
                (2 * (x5 * x5 * (x3 * (x4 * (x4 * x4 - x3 * x3))))) in id
              end; [ auto with zarith | ring ] ]
-       | apply Zlt_gt; apply (Zmult_lt_0_reg_r (x3 * x3 + x4 * x4));
-         try (apply Zgt_lt; progress auto with zarith); rewrite <- H6; auto ]) 
+       | apply Z.lt_gt; apply (Zmult_lt_0_reg_r (x3 * x3 + x4 * x4));
+         try (apply Z.gt_lt; progress auto with zarith); rewrite <- H6; auto ]) 
      | match goal with
        | id : ?x = 2 * _ * (_ * _) |- _ =>
          cut (x <> 0); auto with zarith; intro;

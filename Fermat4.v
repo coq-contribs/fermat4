@@ -16,12 +16,12 @@ Proof.
   intro; elim (diophantus20_equiv y z); auto with zarith.
   generalize (Zmult_lt_0_compat _ _ H H); intro;
     generalize (Zmult_lt_0_compat _ _ H6 H6); clear H6; intro;
-    rewrite <- H5 in H6; generalize (Zlt_gt _ _ H0); intro;
+    rewrite <- H5 in H6; generalize (Z.lt_gt _ _ H0); intro;
     cut (z * z + y * y > 0); auto with zarith; intro;
-    generalize (Zlt_gt _ _ H6); intro; generalize (Zmult_gt_0_reg_l _ _ H8 H9);
-    intro; generalize (Zgt_lt _ _ H10); intro; cut (y < z); auto with zarith.
+    generalize (Z.lt_gt _ _ H6); intro; generalize (Zmult_gt_0_reg_l _ _ H8 H9);
+    intro; generalize (Z.gt_lt _ _ H10); intro; cut (y < z); auto with zarith.
   split;
-    [ rewrite H5; apply Zge_le; apply sqr_pos
+    [ rewrite H5; apply Z.ge_le; apply sqr_pos
     | exists (x * x); intuition ].
   replace ((z * z + y * y) * (z * z - y * y)) with
     (z * z * z * z - y * y * y * y); try solve [ ring ]; rewrite <- H4; ring.
@@ -84,7 +84,7 @@ Proof.
         intro; cut (rel_prime q x2);
         [ intro; rewrite (Zmult_assoc (x2 * x2)) in H2; apply fermat4_weak;
           exists x1; exists q; exists x2; intuition; rewrite <- H2; ring
-        | elim (Z_eq_dec x3 1); intro;
+        | elim (Z.eq_dec x3 1); intro;
           [ rewrite a in H5; rewrite a in H6; rewrite Zmult_1_r in H5;
             rewrite Zmult_1_l in H6; rewrite Zmult_assoc in H5; apply prop3;
             rewrite H5; rewrite H6; apply relp_pq2; assumption

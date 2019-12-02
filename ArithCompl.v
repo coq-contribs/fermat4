@@ -21,7 +21,7 @@ Definition is_sqr (n : Z) : Prop :=
 
 Lemma is_sqr_sqr : forall n: Z, is_sqr (n * n).
 Proof.
-  intro; unfold is_sqr; split; try (apply Zge_le; apply sqr_pos);
+  intro; unfold is_sqr; split; try (apply Z.ge_le; apply sqr_pos);
     elim (Z_le_dec 0 n); intro;
       [ exists n; auto | exists (- n); intuition; ring ].
 Qed.
@@ -51,7 +51,7 @@ Qed.
 Lemma sqr_le : forall a : Z, a <= a * a.
 Proof.
   intro; elim (Z_le_dec 0 a); intro;
-    [ elim (Z_eq_dec a 0); intro; try (rewrite a1; auto with zarith);
+    [ elim (Z.eq_dec a 0); intro; try (rewrite a1; auto with zarith);
       pattern a at 1; replace a with (a * 1); try ring;
       apply (Zmult_le_compat a 1 a a)
     | generalize (sqr_pos a) ]; auto with zarith.
@@ -60,7 +60,7 @@ Qed.
 Lemma sqr_spos : forall z : Z, z <> 0 -> z * z > 0.
 Proof.
   intros; elim (not_Zeq _ _ H); clear H; intro.
-  unfold Zlt in H; rewrite Zcompare_opp in H; fold (- (0) < - z) in H;
+  unfold Z.lt in H; rewrite Zcompare_opp in H; fold (- (0) < - z) in H;
     simpl in H; cut (z * z = - z * - z);
       [ intro; rewrite H0; apply Zmult_gt_0_compat; auto with zarith
       | ring ].
@@ -82,7 +82,7 @@ Qed.
 
 Lemma sqr_sum : forall a b : Z, b <> 0 -> a * a + b * b <> 0.
 Proof.
-  intros; elim (Z_eq_dec a 0).
+  intros; elim (Z.eq_dec a 0).
   intro; rewrite a0; simpl; generalize (sqr_spos b H); intro; auto with zarith.
   intro; generalize (sqr_spos a b0); intro; generalize (sqr_spos b H); intro;
     auto with zarith.
@@ -91,19 +91,19 @@ Qed.
 Lemma sqr_sum2 : forall a b : Z, 0 <= a * a + b * b.
 Proof.
   intros; generalize (Zplus_le_compat 0 (a * a) 0 (b * b)); simpl; intro;
-    apply H; apply Zge_le; apply sqr_pos.
+    apply H; apply Z.ge_le; apply sqr_pos.
 Qed.
 
 Lemma sqr_sum3 : forall a b : Z, b > 0 -> a * a + b * b > 0.
 Proof.
-  intros; apply Zlt_gt; fold (0 + 0); apply Zplus_le_lt_compat;
-    [ apply Zge_le; apply sqr_pos | apply Zgt_lt; auto with zarith ].
+  intros; apply Z.lt_gt; fold (0 + 0); apply Zplus_le_lt_compat;
+    [ apply Z.ge_le; apply sqr_pos | apply Z.gt_lt; auto with zarith ].
 Qed.
 
 Lemma sqr_sum4: forall a b : Z, a * a + b * b = 0 -> a = 0 /\ b = 0.
 Proof.
-  intros; elim (Z_eq_dec a 0); intro;
-    [ elim (Z_eq_dec b 0); intro;
+  intros; elim (Z.eq_dec a 0); intro;
+    [ elim (Z.eq_dec b 0); intro;
       [ auto | generalize (sqr_sum a _ b0); tauto ]
     | generalize (sqr_sum b _ b0); rewrite Zplus_comm in H; tauto].
 Qed.
@@ -135,12 +135,12 @@ Qed.
 
 Lemma sqr_gt : forall a b : Z, a >= 0 -> a < b -> a * a < b * b.
 Proof.
-  intros; generalize (Zge_le _ _ H); clear H; intro;
+  intros; generalize (Z.ge_le _ _ H); clear H; intro;
     elim (Zle_lt_or_eq _ _ H); clear H; intro.
   generalize (Zmult_lt_compat_l _ _ _ H H0); intro; assert (0 < b);
     auto with zarith; generalize (Zmult_lt_compat_r _ _ _ H2 H0);
     auto with zarith.
-  rewrite <- H; rewrite <- H in H0; apply Zgt_lt; auto with zarith.
+  rewrite <- H; rewrite <- H in H0; apply Z.gt_lt; auto with zarith.
 Qed.
 
 Lemma sqr_ge : forall a b : Z, a >= 0 -> a <= b -> a * a <= b * b.
@@ -162,7 +162,7 @@ Lemma neq_1 : forall u v m n : Z,
   m <> 0 -> n <> 0 -> u * u = m * m + n * n -> v * v = n * n - m * m ->
   u <> 1 /\ v <> 1.
 Proof.
-  intros; case (Z_eq_dec u 1); intro; case (Z_eq_dec v 1); intro; try tauto;
+  intros; case (Z.eq_dec u 1); intro; case (Z.eq_dec v 1); intro; try tauto;
     elimtype False;
       [ rewrite e in H1; simpl in H1; rewrite e0 in H2; simpl in H2;
         rewrite H2 in H1; cut (2 * (m * m) = 0); auto with zarith; intro;
@@ -188,9 +188,9 @@ Qed.
 
 Lemma Zmult_neq_0 : forall a b : Z, a * b <> 0 -> a <> 0 /\ b <> 0.
 Proof.
-  intros; elim (Z_eq_dec a 0); intro;
+  intros; elim (Z.eq_dec a 0); intro;
     [ rewrite a0 in H; simpl in H; auto
-    | elim (Z_eq_dec b 0); intro; try (rewrite a0 in H;
+    | elim (Z.eq_dec b 0); intro; try (rewrite a0 in H;
       rewrite Zmult_comm in H; simpl in H); auto ].
 Qed.
 
@@ -210,14 +210,14 @@ Qed.
 Lemma sqr_sum5 : forall a b: Z,
   a <> 0 -> b <> 0 -> distinct_parity a b -> a + b < a * a + b * b.
 Proof.
-  intros; case (Z_eq_dec a 1); intro;
+  intros; case (Z.eq_dec a 1); intro;
     [ rewrite e; replace (1 * 1 + b * b) with (1+b*b);[idtac|ring];
       apply Zplus_lt_compat_l;
-      case (Z_eq_dec b 1); intro;
+      case (Z.eq_dec b 1); intro;
       [ elimtype False; rewrite e in H1; rewrite e0 in H1;
         generalize (ndistp_eq 1); auto
       | apply sqr_lt; assumption ]
-    | case (Z_eq_dec b 1); intro;
+    | case (Z.eq_dec b 1); intro;
       [ rewrite e; replace (a * a + 1 * 1) with (a * a + 1); try ring;
         apply Zplus_lt_compat_r; apply sqr_lt; assumption
       | apply Zplus_lt_compat; apply sqr_lt; assumption ] ].
@@ -225,7 +225,7 @@ Qed.
 
 Lemma Zeven_def1 : forall z : Z, (Zeven z) -> exists k : Z, z = 2 * k.
 Proof.
-  intros; generalize (Zeven_div2 _ H); intro; exists (Zdiv2 z); assumption.
+  intros; generalize (Zeven_div2 _ H); intro; exists (Z.div2 z); assumption.
 Qed.
 
 Lemma Zeven_def2 : forall z : Z, (exists k : Z, z = 2 * k) -> (Zeven z).
@@ -252,7 +252,7 @@ Qed.
 Lemma Zodd_opp1 : forall a : Z, Zodd (-a) -> Zodd a.
 Proof.
   intros; elim (Zodd_def1 _ H); clear H; intros; apply Zodd_def2;
-    exists (-x - 1); rewrite <- (Zopp_involutive a); rewrite H; ring.
+    exists (-x - 1); rewrite <- (Z.opp_involutive a); rewrite H; ring.
 Qed.
 
 Lemma Zodd_opp2 : forall a : Z, Zodd a -> Zodd (-a).
@@ -392,7 +392,7 @@ Qed.
 
 Lemma prime_2 : prime 2.
 Proof.
-  apply prime_intro; auto with zarith; intros; case (Z_eq_dec n 1); intro;
+  apply prime_intro; auto with zarith; intros; case (Z.eq_dec n 1); intro;
     try (elimtype False; progress auto with zarith); rewrite e;
     apply rel_prime_1.
 Qed.
@@ -405,7 +405,7 @@ Qed.
 Lemma rel_prime_dec : forall x y : Z, {rel_prime x y} + {~ rel_prime x y}.
 Proof.
   intros; unfold rel_prime; elim (Zgcd_spec x y); intros; elim p; clear p;
-    intros; elim (Z_eq_dec x0 1); intro;
+    intros; elim (Z.eq_dec x0 1); intro;
       [ rewrite a in H; left; assumption
       | right; red; intro; elim H; clear H; intros; elim H1; clear H1; intros;
         generalize (H5 _ H H2); clear H H2 H3 H1 H4 H5; intro;
@@ -419,8 +419,8 @@ Proof.
     intros; exists x0; split;
       [ assumption
       | split;
-        [ elim (Z_eq_dec x0 1); intro; [ rewrite a in H0; auto | assumption ]
-        | elim (Z_eq_dec x0 (-1)); intro;
+        [ elim (Z.eq_dec x0 1); intro; [ rewrite a in H0; auto | assumption ]
+        | elim (Z.eq_dec x0 (-1)); intro;
           [ rewrite a in H0; generalize (Zis_gcd_opp _ _ _ H0); simpl;
             clear H0; intro; generalize (Zis_gcd_sym _ _ _ H0); auto
           | assumption ] ] ].
@@ -438,7 +438,7 @@ Lemma gcd_rel_prime : forall x y d : Z,
   Zis_gcd x y d -> exists a : Z, exists b : Z,
     x = d * a /\ y = d * b /\ rel_prime a b.
 Proof.
-  intros; elim (Z_eq_dec d 0); intro;
+  intros; elim (Z.eq_dec d 0); intro;
     [ rewrite a in H; elim H; clear H; intros;
       destruct H as (q,H), H0 as (q0,H0); revert H H0;
       ring_simplify (q * 0); ring_simplify (q0 * 0); intros;
@@ -463,8 +463,8 @@ Qed.
 
 Lemma relp_mult2 : forall a b : Z, rel_prime (a * b) a -> a = 1 \/ a = -1.
 Proof.
-  intros; elim (Z_eq_dec a 1); intro; try tauto; elim (Z_eq_dec a (-1)); intro;
-    try tauto; elimtype False; generalize (Zdivide_refl a); intro;
+  intros; elim (Z.eq_dec a 1); intro; try tauto; elim (Z.eq_dec a (-1)); intro;
+    try tauto; elimtype False; generalize (Z.divide_refl a); intro;
     generalize (Zdivide_factor_r a b); intro;
     generalize (not_rel_prime2 _ _ _ H1 H0 b0 b1); auto.
 Qed.
@@ -491,8 +491,8 @@ Qed.
 
 Lemma relp_neq : forall m n : Z, m <> 1 -> m <> -1 -> rel_prime m n -> m <> n.
 Proof.
-  intros; case (Z_eq_dec m n); auto; intro; elimtype False;
-    generalize (Zdivide_refl m); intro; generalize (Zdivide_refl n);
+  intros; case (Z.eq_dec m n); auto; intro; elimtype False;
+    generalize (Z.divide_refl m); intro; generalize (Z.divide_refl n);
     pattern n at 1; rewrite <- e; intro;
     generalize (not_rel_prime2 _ _ _ H2 H3 H H0); auto.
 Qed.
@@ -517,7 +517,7 @@ Proof.
       | elim (not_rel_prime1 _ _ b); clear b; intros; elim H3; clear H3;
         intros; elim H4; clear H4; intros; elim (gcd_rel_prime _ _ _ H3);
         clear H3; intros; do 2 (elim H3; clear H3; intros); elim H6; clear H6;
-        intros; rewrite H3 in H1; rewrite H6 in H1; elim (Z_eq_dec x0 0);
+        intros; rewrite H3 in H1; rewrite H6 in H1; elim (Z.eq_dec x0 0);
         intro; try (elimtype False; rewrite a0 in H6; simpl in H6; auto);
         replace (x0 * x1 * (x0 * x1)) with (x0 * x0 * (x1 * x1)) in H1;
         try ring; replace (x0 * x2 * (x0 * x2) * a) with
@@ -532,7 +532,7 @@ Proof.
           [ rewrite H9 in H1; rewrite Zmult_1_l in H1; rewrite <- H1;
             elim (Z_le_dec 0 x1); intro;
               [ unfold is_sqr; intuition; exists x1; intuition
-              | split; [ apply Zge_le; apply sqr_pos | exists (-x1);
+              | split; [ apply Z.ge_le; apply sqr_pos | exists (-x1);
                 intuition; ring ] ]
           | elimtype False; generalize (sqr_pos x2); intro; rewrite H9 in H10;
             auto with zarith ] ].
@@ -575,7 +575,7 @@ Qed.
 Lemma divide_2b : forall z : Z,
   z <> 1 -> z <> -1 -> (z | 2) -> z = 2 \/ z = -2.
 Proof.
-  intros; elim (Z_eq_dec z 0); intro;
+  intros; elim (Z.eq_dec z 0); intro;
     [ elim H1; clear H1; intros; rewrite a in H1; auto with zarith
     | cut (2 <> 0); auto with zarith; intro;
       generalize (Zdivide_bounds _ _ H1 H2); clear H1; simpl; generalize H;
@@ -588,7 +588,7 @@ Qed.
 Lemma divide_4 : forall a b : Z, (a * a * a * a | b * b * b * b) -> (a | b).
 Proof.
   intros a b (q,H); cut (is_sqr ((a * a * (a * a)) * q));
-    [ intro; elim (Z_eq_dec a 0); intro; try (rewrite a0 in H;
+    [ intro; elim (Z.eq_dec a 0); intro; try (rewrite a0 in H;
       rewrite (Zmult_comm q) in H; simpl in H; rewrite <- Zmult_assoc in H;
       do 2 (generalize (sqr_0 _ H); clear H; intro); rewrite H;
       apply Zdivide_0); cut (a * a <> 0); try (generalize (sqr_spos _ b0);
@@ -596,9 +596,9 @@ Proof.
       clear H0; intro; elim H0; clear H0; intros; do 2 (elim H2; clear H2;
       intros); rewrite <- H2 in H; replace (x * x * (a * a * a * a)) with
       (a * a * x * (a * a * x)) in H; try ring; cut (0 <= a * a * x);
-      try (apply Zmult_le_0_compat; try assumption; apply Zge_le;
+      try (apply Zmult_le_0_compat; try assumption; apply Z.ge_le;
       apply sqr_pos); intro; rewrite <- Zmult_assoc in H;
-      elim (sqr_compat _ _ H); intro; try (elim (Z_eq_dec b 0); intro;
+      elim (sqr_compat _ _ H); intro; try (elim (Z.eq_dec b 0); intro;
         [ rewrite a0; exists 0
         | elimtype False; generalize (sqr_spos _ b1); intro ];
       solve [ auto with zarith ]); cut (is_sqr (a * a * x));
@@ -611,11 +611,11 @@ Proof.
       rewrite H9; ring
     | split;
       [ replace (a * a * (a * a) * q) with (q * (a * a * a * a)); try ring;
-        rewrite <- H; rewrite <- (Zmult_assoc (b * b)); apply Zge_le;
+        rewrite <- H; rewrite <- (Zmult_assoc (b * b)); apply Z.ge_le;
         apply sqr_pos
       | exists (b * b); split;
         [ rewrite Zmult_assoc; rewrite H; ring
-        | apply Zge_le; apply sqr_pos ] ] ].
+        | apply Z.ge_le; apply sqr_pos ] ] ].
 Qed.
 
 Lemma divide_sqr : forall a b : Z, (a | b) -> (a * a | b * b).
@@ -651,7 +651,7 @@ Qed.
 Lemma rel_prime_opp : forall x y : Z, rel_prime x y -> rel_prime (-x) (-y).
 Proof.
   unfold rel_prime; intros; do 2 (apply Zis_gcd_minus;
-    rewrite Zopp_involutive); assumption.
+    rewrite Z.opp_involutive); assumption.
 Qed.
 
 Lemma rel_prime_oppr : forall x y : Z, rel_prime x y -> rel_prime x (-y).
@@ -709,7 +709,7 @@ Lemma prop1 : forall m n : Z,
 Proof.
   unfold rel_prime; intros; elim (distp_odd _ _ H0); clear H0; intros;
     elim (Zgcd_spec (m + n) (n - m)); intros; elim p; clear p; intros;
-    elim (Z_eq_dec x 1); intro;
+    elim (Z.eq_dec x 1); intro;
       [ rewrite a in H2; assumption
       | elimtype False; elim H2; clear H2; intros;
         generalize (Zdivide_plus_r _ _ _ H2 H4);
@@ -717,7 +717,7 @@ Proof.
         generalize (Zdivide_minus_l _ _ _ H2 H4);
         ring_simplify (m + n - (n - m));
         intro; elim (Zdivide_dec x 2); intro;
-          [ elim (Z_eq_dec x 0); intro;
+          [ elim (Z.eq_dec x 0); intro;
             [ rewrite a0 in a; clear a0; elim a; clear a; intros;
               auto with zarith
             | generalize (divide_2 _ H3 b0 b a); clear a; intro;
@@ -772,7 +772,7 @@ Qed.
 
 Definition R_prime (x y : Z) := 1 < x /\ 1 < y /\ x < y.
 
-Definition f_Z (x : Z) := Zabs_nat x.
+Definition f_Z (x : Z) := Z.abs_nat x.
 
 Lemma R_prime_wf : well_founded R_prime.
 Proof.
@@ -796,14 +796,14 @@ Proof.
       simpl; case (Z_lt_dec 1 a); intro; try (right; red; intro; elim H2;
       clear H2; intros; progress auto); apply (ind_prime p); intros;
       case (rel_prime_dec x a); intro;
-        [ case (Z_eq_dec x 2); intro;
+        [ case (Z.eq_dec x 2); intro;
           [ left; rewrite e in H2; rewrite e in r; generalize (rel_prime_1 a);
             intro; apply prime_intro; try assumption; intros;
-            case (Z_eq_dec n 1); intro; try (rewrite e0; assumption);
-            case (Z_eq_dec n 2); intro; try (rewrite e0; assumption); apply H2;
+            case (Z.eq_dec n 1); intro; try (rewrite e0; assumption);
+            case (Z.eq_dec n 2); intro; try (rewrite e0; assumption); apply H2;
             auto with zarith
           | apply (H (x - 1)); try unfold R_prime; auto with zarith; intros;
-            case (Z_eq_dec c x); intro; try (rewrite e; assumption); apply H2;
+            case (Z.eq_dec c x); intro; try (rewrite e; assumption); apply H2;
             auto with zarith ]
         | right; red; intro; elim H3; clear H3; intros; cut (1 <= x < a);
           auto with zarith; intro; generalize (H4 _ H5); auto ]
@@ -812,7 +812,7 @@ Qed.
 
 Lemma prime_dec : forall a : Z, prime a \/ ~ prime a.
 Proof.
-  intros; case (Z_eq_dec a 2); intro;
+  intros; case (Z.eq_dec a 2); intro;
     [ left; rewrite e; apply prime_2
     | case (Z_lt_dec 1 a); intro; try (right; red; intro; elim H; clear H;
       intros; progress auto); apply (prime_dec_gen a (a - 1));
@@ -828,17 +828,17 @@ Proof.
   - exists q; exists b; intuition;
     apply (Zmult_gt_0_lt_reg_r 1 q b); auto with zarith.
   - case (rel_prime_dec b a); intro.
-    * case (Z_eq_dec b 2); intro.
+    * case (Z.eq_dec b 2); intro.
       + absurd (prime a); try assumption.
         apply prime_intro; auto; rewrite e in H4; rewrite e in r;
-        generalize (rel_prime_1 a); intros; case (Z_eq_dec n0 1); intro;
-        try (rewrite e0; assumption); case (Z_eq_dec n0 2); intro;
+        generalize (rel_prime_1 a); intros; case (Z.eq_dec n0 1); intro;
+        try (rewrite e0; assumption); case (Z.eq_dec n0 2); intro;
         try (rewrite e0; assumption); apply H4; auto with zarith.
       + assert (R_prime (b - 1) b) by (unfold R_prime; intuition).
         assert (1 < b - 1) by auto with zarith.
         assert (b - 1 < a) by auto with zarith.
         assert (forall c : Z, (b - 1) < c < a -> rel_prime c a)
-        by (intros; case (Z_eq_dec c b); intro;
+        by (intros; case (Z.eq_dec c b); intro;
             try (rewrite e; assumption);
             apply H4; auto with zarith).
         elim (H _ H5 H0 H6 H7 H3 H8); intros; elim H9; clear H9; intros;
@@ -854,7 +854,7 @@ Proof.
         assert (0 < q * x) by auto with zarith.
         assert (0 < x) by auto with zarith.
         generalize (Zmult_lt_0_reg_r _ _ H12 H11); intro;
-        case (Z_eq_dec q 1); auto with zarith; intro; elimtype False;
+        case (Z.eq_dec q 1); auto with zarith; intro; elimtype False;
         rewrite e in H7; rewrite Zmult_1_l in H7; destruct H5 as (q0,H5);
         rewrite H5 in H1; cut (0 < q0 * x); auto with zarith;
         intro; generalize (Zmult_lt_0_reg_r _ _ H12 H14); intro;
@@ -866,7 +866,7 @@ Proof.
         assert (0 < -q * -x) by auto with zarith.
         assert (0 < -x) by auto with zarith.
         generalize (Zmult_lt_0_reg_r _ _ H12 H11);
-        intro; case (Z_eq_dec q (-1)); auto with zarith; intro;
+        intro; case (Z.eq_dec q (-1)); auto with zarith; intro;
         elimtype False; rewrite e in H7; rewrite Zmult_comm in H7;
         rewrite <- Zopp_eq_mult_neg_1 in H7; destruct H5 as (q0,H5);
         replace (q0 * x) with (-q0 * -x) in H5 by ring;
@@ -880,7 +880,7 @@ Qed.
 Lemma not_prime : forall a : Z, 1 < a -> ~ prime a ->
   exists q : Z, exists b : Z, a = q * b /\ 1 < q /\ 1 < b.
 Proof.
-  intros; case (Z_eq_dec a 2); intro;
+  intros; case (Z.eq_dec a 2); intro;
     [ elimtype False; rewrite e in H0; generalize (prime_2); auto
     | apply (not_prime_gen a (a - 1)); auto with zarith; intros;
       elimtype False; auto with zarith ].
@@ -979,9 +979,9 @@ Proof.
     match goal with
     | |- is_sqr ?x => elim (Z_lt_dec 1 x); intro;
       [ idtac
-      | elim (Z_eq_dec x 0); intro;
+      | elim (Z.eq_dec x 0); intro;
         [ rewrite a; unfold is_sqr; intuition; exists 0; intuition
-        | elim (Z_eq_dec x 1); intro;
+        | elim (Z.eq_dec x 1); intro;
           [ rewrite a; unfold is_sqr; intuition; exists 1; intuition
           | elimtype False; auto with zarith ] ] ]
     end; generalize (sqr_prime1 _ H7); intro; elim (Zfact _ a); intros; 
@@ -1144,7 +1144,7 @@ Proof.
       try (field; apply not_O_IZR; auto with zarith);
       generalize (Rmult_le_reg_l _ _ _ H2 H1); intro;
       generalize (le_IZR _ _ H5); clear H5; intro; intuition
-    | left; generalize (Zgt_lt _ _ b0); intro; generalize (IZR_lt _ _ H2);
+    | left; generalize (Z.gt_lt _ _ b0); intro; generalize (IZR_lt _ _ H2);
       clear H2; intro; simpl in H2; replace 0%R with (/ IZR b * 0)%R in H0;
       try ring; rewrite (Rmult_comm (IZR a)) in H0;
       generalize (Rinv_0_lt_compat _ H2); clear H2; intro;
